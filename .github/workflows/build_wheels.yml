@@ -3,7 +3,7 @@ name: Build wheels
 on:
   push:
     branches:
-      - master
+      - main
     tags:
       - v* # Push events to v* tags
   # pull_request:
