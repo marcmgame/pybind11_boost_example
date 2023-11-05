@@ -52,7 +52,7 @@ jobs:
           tar -xzf boost_1_83_0.tar.gz
           cd boost_1_83_0
           ./bootstrap.sh
-          ./b2 install -j4 --with-chrono --with-thread --with-serialization --with-date_time --with-atomic
+          sudo ./b2 install -j4 --with-chrono --with-thread --with-serialization --with-date_time --with-atomic
           sudo apt-get install -y gmp-devel
           git clone https://github.com/simongog/sdsl-lite.git
           cd sdsl-lite
