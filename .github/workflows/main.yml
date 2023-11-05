@@ -35,10 +35,16 @@ jobs:
         uses: actions/setup-python@v4
 
       - name: Set up C/C++ tools
-        uses: actions/setup-cpp@v2
+        uses: aminya/setup-cpp@v1
         with:
-          cpp-version: 17
+          cmake: true
           boost-version: 1.78
+
+      # - name: Set up C/C++ tools
+      #   uses: actions/setup-cpp@v2
+      #   with:
+      #     cpp-version: 17
+      #     boost-version: 1.78
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.11.4
