@@ -48,12 +48,18 @@ jobs:
 
       - name: Install boost on Linux
         run: |
-          curl --progress-bar -L -o boost_1_69_0.tar.gz https://boostorg.jfrog.io/artifactory/main/release/1.69.0/source/boost_1_69_0.tar.gz
-          tar -xzf boost_1_69_0.tar.gz
-          cd boost_1_69_0
+          curl --progress-bar -L -o boost_1_83_0.tar.gz https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.tar.gz
+          tar -xzf boost_1_83_0.tar.gz
+          cd boost_1_83_0
           ./bootstrap.sh
           ./b2 install -j4 --with-chrono --with-thread --with-serialization --with-date_time --with-atomic
-        shell: bash
+          sudo apt-get install -y gmp-devel
+          git clone https://github.com/simongog/sdsl-lite.git
+          cd sdsl-lite
+          export CFLAGS=-fPIC
+          export CXXFLAGS=-fPIC
+          ./install.sh /usr/local/
+        # shell: bash
         if: runner.os == 'Linux'
 
       - name: Install boost on macOS
