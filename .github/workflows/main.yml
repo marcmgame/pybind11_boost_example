@@ -6,6 +6,9 @@ on:
       - main
     tags:
       - v* # Push events to v* tags
+  # pull_request:
+  #   branches:
+  #     - master
   # Manual run
   workflow_dispatch:
 
@@ -23,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
-        python: [38]
+        python: [310]
 
     steps:
       - name: Checkout repository and submodules
@@ -34,17 +37,31 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
 
-      - name: Set up C/C++ tools
-        uses: aminya/setup-cpp@v1
+      - name: Install boost on Windows
+        uses: MarkusJx/install-boost@v2.1.0
+        id: install-boost-windows
         with:
-          cmake: true
-          boost-version: 1.78
+          boost_version: 1.78.0
+          platform_version: 2019
+          toolset: msvc
+        if: runner.os == 'Windows'
 
-      # - name: Set up C/C++ tools
-      #   uses: actions/setup-cpp@v2
-      #   with:
-      #     cpp-version: 17
-      #     boost-version: 1.78
+      - name: Install boost on Linux
+        run: |
+          curl --progress-bar -L -o boost_1_69_0.tar.gz https://boostorg.jfrog.io/artifactory/main/release/1.69.0/source/boost_1_69_0.tar.gz
+          tar -xzf boost_1_69_0.tar.gz
+          cd boost_1_69_0
+          ./bootstrap.sh
+          ./b2 install -j4 --with-chrono --with-thread --with-serialization --with-date_time --with-atomic
+        shell: bash
+        if: runner.os == 'Linux'
+
+      - name: Install boost on macOS
+        run: |
+          brew upgrade
+          brew install boost
+        shell: bash
+        if: runner.os == 'macOS'
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.11.4
