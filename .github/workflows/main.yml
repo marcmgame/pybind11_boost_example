@@ -1,0 +1,62 @@
+name: Build wheels
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v* # Push events to v* tags
+  # Manual run
+  workflow_dispatch:
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  # Build wheels for macOS, Linux, and Windows
+  build_wheels:
+    name: Wheel for ${{ matrix.os }}-cp${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      # Build the other wheels even if one fails
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        python: [38]
+
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+
+      - name: Set up C/C++ tools
+        uses: actions/setup-cpp@v2
+        with:
+          cpp-version: 17
+          boost-version: 1.78
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.11.4
+        env:
+          CIBW_BUILD: cp${{ matrix.python }}-*
+          # CIBW_ARCHS_MACOS: x86_64 arm64
+          CIBW_ARCHS_MACOS: x86_64
+          CIBW_ARCHS_LINUX: auto aarch64
+
+      - name: Show files
+        run: ls -lh wheelhouse
+        shell: bash
+
+      - name: Verify clean directory
+        run: git diff --exit-code
+        shell: bash
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: wheelhouse/*.whl
