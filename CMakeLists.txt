@@ -8,17 +8,21 @@ endif(APPLE)
 
 add_subdirectory(pybind11)
 
-set(Boost_NO_SYSTEM_PATHS TRUE)
-set(BOOST_ROOT "/usr/local")
+# set(Boost_NO_SYSTEM_PATHS TRUE)
+# set(BOOST_ROOT "/usr/local")
 
-set(BOOST_INCLUDE_DIRS "${BOOST_ROOT}/include")
-set(BOOST_LIBRARY_DIRS "${BOOST_ROOT}/lib")
+# set(BOOST_INCLUDE_DIRS "${BOOST_ROOT}/include")
+# set(BOOST_LIBRARY_DIRS "${BOOST_ROOT}/lib")
 
-set(BOOST_INCLUDE_DIR "${BOOST_ROOT}/include")
-set(BOOST_LIBRARY_DIR "${BOOST_ROOT}/lib")
+# set(BOOST_INCLUDE_DIR "${BOOST_ROOT}/include")
+# set(BOOST_LIBRARY_DIR "${BOOST_ROOT}/lib")
+
+set(BOOST_INCLUDE_DIR "/usr/local/include")
+set(BOOST_LIBRARY_DIR "/usr/local/lib")
 
 find_package(Boost REQUIRED regex date_time system filesystem thread graph program_options)
-include_directories(${BOOST_INCLUDE_DIRS})
+
+# include_directories(${BOOST_INCLUDE_DIRS})
 
 find_package(Boost COMPONENTS chrono thread serialization REQUIRED)
 
