@@ -25,7 +25,8 @@ jobs:
       # Build the other wheels even if one fails
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        os: [windows-latest, ubuntu-22.04, macos-latest]
+        # os: [windows-latest, ubuntu-latest, macos-latest]
         python: [310]
 
     steps:
@@ -56,7 +57,7 @@ jobs:
         id: install-boost-linux
         with:
           boost_version: 1.78.0
-          platform_version: 20.04
+          platform_version: 22.04
           toolset: gcc
         if: runner.os == 'Linux'
 
@@ -67,6 +68,7 @@ jobs:
               -DBoost_LIBRARY_DIRS=${{steps.install-boost.outputs.BOOST_ROOT}}/lib
         env:
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
+        if: runner.os == 'Linux'
 
       - name: Install boost on macOS
         run: |
