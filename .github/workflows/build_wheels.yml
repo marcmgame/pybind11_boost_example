@@ -26,6 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-22.04, macos-latest]
+        # os: [windows-latest, ubuntu-20.04, macos-latest]
         # os: [windows-latest, ubuntu-latest, macos-latest]
         python: [310]
 
@@ -56,7 +57,7 @@ jobs:
         uses: MarkusJx/install-boost@v2.1.0
         id: install-boost-linux
         with:
-          boost_version: 1.78.0
+          boost_version: 1.80.0
           platform_version: 22.04
           toolset: gcc
         if: runner.os == 'Linux'
