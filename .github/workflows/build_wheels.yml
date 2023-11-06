@@ -60,6 +60,7 @@ jobs:
           boost_version: 1.80.0
           platform_version: 22.04
           toolset: gcc
+          arch: x86
         if: runner.os == 'Linux'
 
       # - name: Configure CMake
@@ -84,7 +85,7 @@ jobs:
           CIBW_BUILD: cp${{ matrix.python }}-*
           # CIBW_ARCHS_MACOS: x86_64 arm64
           CIBW_ARCHS_MACOS: x86_64
-          CIBW_ARCHS_LINUX: auto aarch64
+          CIBW_ARCHS_LINUX: x86_64 # auto aarch64
 
       - name: Show files
         run: ls -lh wheelhouse
