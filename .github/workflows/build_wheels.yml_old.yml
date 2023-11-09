@@ -39,6 +39,11 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
 
+      # - name: Setup cmake
+      #   uses: jwlawson/actions-setup-cmake@v1.9
+      #   with:
+      #     cmake-version: '3.16.x'
+
       - name: Install boost on Windows
         uses: MarkusJx/install-boost@v2.1.0
         id: install-boost-windows
@@ -58,19 +63,21 @@ jobs:
           arch: x86
         if: runner.os == 'Linux'
 
-      - name: Install boost on macOS
-        uses: MarkusJx/install-boost@v2.1.0
-        id: install-boost-macos
-        with:
-          boost_version: 1.80.0
-        if: runner.os == 'macOS'
-
-      # - name: Install boost on macOS
+      # - name: Configure CMake
       #   run: |
-      #     brew upgrade
-      #     brew install boost
-      #   shell: bash
-      #   if: runner.os == 'macOS'
+      #         cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE -B build\
+      #         -DBoost_INCLUDE_DIR=${{steps.install-boost.outputs.BOOST_ROOT}}/include\
+      #         -DBoost_LIBRARY_DIRS=${{steps.install-boost.outputs.BOOST_ROOT}}/lib
+      #   env:
+      #     BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
+      #   if: runner.os == 'Linux'
+
+      - name: Install boost on macOS
+        run: |
+          brew upgrade
+          brew install boost
+        shell: bash
+        if: runner.os == 'macOS'
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.11.4
@@ -79,9 +86,6 @@ jobs:
           # CIBW_ARCHS_MACOS: x86_64 arm64
           CIBW_ARCHS_MACOS: x86_64
           CIBW_ARCHS_LINUX: x86_64 # auto aarch64
-          BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
-          Boost_INCLUDE_DIR: ${{steps.install-boost.outputs.BOOST_ROOT}}/include
-          Boost_LIBRARY_DIRS: ${{steps.install-boost.outputs.BOOST_ROOT}}/lib
 
       - name: Show files
         run: ls -lh wheelhouse
