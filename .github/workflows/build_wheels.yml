@@ -60,7 +60,8 @@ jobs:
 
       - name: Install boost on macOS
         uses: MarkusJx/install-boost@v2.1.0
-        id: install-boost-macos
+        id: install-boost
+        # id: install-boost-macos
         with:
           boost_version: 1.80.0
         if: runner.os == 'macOS'
