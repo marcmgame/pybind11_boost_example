@@ -51,7 +51,8 @@ jobs:
 
       - name: Install boost on Linux
         uses: MarkusJx/install-boost@v2.1.0
-        id: install-boost-linux
+        id: install-boost
+        # id: install-boost-linux
         with:
           boost_version: 1.80.0
           platform_version: 22.04
