@@ -11,6 +11,8 @@ add_subdirectory(pybind11)
 # set(Boost_NO_SYSTEM_PATHS TRUE)
 # set(BOOST_ROOT "/usr/local")
 
+set(Boost_USE_STATIC_LIBS OFF)
+
 set(BOOST_INCLUDE_DIRS "${BOOST_ROOT}/include")
 set(BOOST_LIBRARY_DIRS "${BOOST_ROOT}/lib")
 
