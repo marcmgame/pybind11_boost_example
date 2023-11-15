@@ -16,19 +16,37 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  # Build wheels for macOS, Linux, and Windows
+  # Build wheels for Linux, macOS, and Windows
   build_wheels:
-    name: Wheel for ${{ matrix.os }}-cp${{ matrix.python }}
-    runs-on: ${{ matrix.os }}
+    name: Wheel for ${{ matrix.buildplat[0] }}-${{ matrix.python }}
+    runs-on: ${{ matrix.buildplat[0] }}
 
     strategy:
       # Build the other wheels even if one fails
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-22.04, macos-latest]
-        # os: [windows-latest, ubuntu-20.04, macos-latest]
-        # os: [windows-latest, ubuntu-latest, macos-latest]
-        python: [310]
+        buildplat:
+        - [ubuntu-latest, manylinux, x86_64]
+        - [ubuntu-latest, manylinux, aarch64]
+        - [ubuntu-latest, manylinux, i686]
+        - [ubuntu-latest, musllinux, x86_64]
+        - [ubuntu-latest, musllinux, aarch64]
+        - [ubuntu-latest, musllinux, i686]
+        - [macos-latest, macosx, x86_64]
+        - [macos-latest, macosx, arm64]
+        - [windows-latest, win, AMD64]
+        - [windows-latest, win, ARM64]
+        - [windows-latest, win32, x86]
+        python: ['cp310', 'pp39']
+        # python: ['cp38', 'cp39', 'cp310', 'cp311', 'cp312', 'pp39']
+        # python: ['cp38', 'cp39', 'cp310', 'cp311', 'cp312']
+        # python: [38, 39, 310, 311, 312]
+        boost_version: '1.80.0'
+        exclude:
+          - buildplat: [windows-latest, win, ARM64]
+            python: 'pp39'
+          - buildplat: [windows-latest, win32, x86]
+            python: 'pp39'
 
     steps:
       - name: Checkout repository and submodules
@@ -39,49 +57,18 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
 
-      - name: Install boost on Windows
-        uses: MarkusJx/install-boost@v2.1.0
-        # id: install-boost
-        id: install-boost-windows
-        with:
-          boost_version: 1.78.0
-          platform_version: 2019
-          toolset: msvc
-        if: runner.os == 'Windows'
-
-      - name: Install boost on Linux
+      - name: Install boost
         uses: MarkusJx/install-boost@v2.1.0
         id: install-boost
-        # id: install-boost-linux
         with:
-          boost_version: 1.80.0
-          platform_version: 22.04
-          toolset: gcc
-          arch: x86
-        if: runner.os == 'Linux'
-
-      - name: Install boost on macOS
-        uses: MarkusJx/install-boost@v2.1.0
-        # id: install-boost
-        id: install-boost-macos
-        with:
-          boost_version: 1.80.0
-        if: runner.os == 'macOS'
-
-      # - name: Install boost on macOS
-      #   run: |
-      #     brew upgrade
-      #     brew install boost
-      #   shell: bash
-      #   if: runner.os == 'macOS'
+          boost_version: ${{ matrix.boost_version }}
+          arch: ${{ matrix.buildplat[2] }}
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.11.4
         env:
-          CIBW_BUILD: cp${{ matrix.python }}-*
-          # CIBW_ARCHS_MACOS: x86_64 arm64
-          CIBW_ARCHS_MACOS: x86_64
-          CIBW_ARCHS_LINUX: x86_64 # auto aarch64
+          CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}*
+          CIBW_ARCHS: ${{ matrix.buildplat[2] }}
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
           Boost_INCLUDE_DIR: ${{ steps.install-boost.outputs.BOOST_ROOT }}/include
           Boost_LIBRARY_DIRS: ${{ steps.install-boost.outputs.BOOST_ROOT }}/lib
