@@ -38,17 +38,17 @@ jobs:
         # boost_version: ['1.80.0']
         include:
           - buildplat: [ubuntu-latest, manylinux, x86_64]
-            boost_version: '1.80.0'
+            boost_version: 1.80.0
             version: 22.04
-            toolset: 'gcc'
+            toolset: gcc
           - buildplat: [macos-latest, macosx, x86_64]
-            boost_version: '1.80.0'
-            version: 22.04
-            toolset: 'clang'
+            boost_version: 1.80.0
+            version: 11
+            toolset: clang
           - buildplat: [windows-latest, win, AMD64]
-            boost_version: '1.80.0'
-            version: 22.04
-            toolset: 'msvc'
+            boost_version: 1.80.0
+            version: 2022
+            toolset: msvc
 
     steps:
       - name: Checkout repository and submodules
@@ -66,6 +66,7 @@ jobs:
           boost_version: ${{ matrix.boost_version }}
           platform_version: ${{ matrix.version }}
           toolset: ${{ matrix.toolset }}
+          arch: x86
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.11.4
