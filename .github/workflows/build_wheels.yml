@@ -27,26 +27,27 @@ jobs:
       matrix:
         buildplat:
         - [ubuntu-latest, manylinux, x86_64]
-        - [ubuntu-latest, manylinux, aarch64]
-        - [ubuntu-latest, manylinux, i686]
+        # - [ubuntu-latest, manylinux, aarch64]
+        # - [ubuntu-latest, manylinux, i686]
         - [ubuntu-latest, musllinux, x86_64]
-        - [ubuntu-latest, musllinux, aarch64]
-        - [ubuntu-latest, musllinux, i686]
+        # - [ubuntu-latest, musllinux, aarch64]
+        # - [ubuntu-latest, musllinux, i686]
         - [macos-latest, macosx, x86_64]
-        - [macos-latest, macosx, arm64]
+        # - [macos-latest, macosx, arm64]
         - [windows-latest, win, AMD64]
-        - [windows-latest, win, ARM64]
-        - [windows-latest, win32, x86]
-        python: ['cp310', 'pp39']
+        # - [windows-latest, win, ARM64]
+        # - [windows-latest, win32, x86]
+        python: ['cp310']
+        # python: ['cp310', 'pp39']
         # python: ['cp38', 'cp39', 'cp310', 'cp311', 'cp312', 'pp39']
         # python: ['cp38', 'cp39', 'cp310', 'cp311', 'cp312']
         # python: [38, 39, 310, 311, 312]
         # boost_version: 1.80.0 # '1.80.0'
-        exclude:
-          - buildplat: [windows-latest, win, ARM64]
-            python: 'pp39'
-          - buildplat: [windows-latest, win32, x86]
-            python: 'pp39'
+        # exclude:
+        #   - buildplat: [windows-latest, win, ARM64]
+        #     python: 'pp39'
+        #   - buildplat: [windows-latest, win32, x86]
+        #     python: 'pp39'
 
     steps:
       - name: Checkout repository and submodules
