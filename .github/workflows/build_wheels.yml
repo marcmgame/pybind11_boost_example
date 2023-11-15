@@ -18,7 +18,7 @@ env:
 jobs:
   # Build wheels for Linux, macOS, and Windows
   build_wheels:
-    name: Wheel for ${{ matrix.buildplat[0] }}-${{ matrix.python }}
+    name: Wheel for ${{ matrix.buildplat[0] }}-${{ matrix.python }}_${{ matrix.buildplat[1] }}_${{ matrix.buildplat[2] }}
     runs-on: ${{ matrix.buildplat[0] }}
 
     strategy:
