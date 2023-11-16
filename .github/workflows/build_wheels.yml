@@ -75,7 +75,7 @@ jobs:
           # CIBW_ENVIRONMENT_LINUX: BOOST_ROOT=/boost
           # CIBW_ENVIRONMENT_PASS_LINUX: BOOST_ROOT
           CIBW_BEFORE_ALL_LINUX: >
-            sudo yum install boost-devel
+            yum install boost-devel
           # CIBW_BEFORE_BUILD_LINUX: echo $BOOST_ROOT
           # CIBW_ENVIRONMENT_LINUX: BOOST_ROOT=/boost
           # CIBW_ENVIRONMENT_PASS_LINUX: BOOST_ROOT
