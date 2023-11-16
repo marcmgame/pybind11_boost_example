@@ -4,11 +4,6 @@ on:
   push:
     branches:
       - main
-    tags:
-      - v* # Push events to v* tags
-  # pull_request:
-  #   branches:
-  #     - master
   # Manual run
   workflow_dispatch:
 
@@ -18,38 +13,27 @@ env:
 jobs:
   # Build wheels for Linux, macOS, and Windows
   build_wheels:
-    name: Wheel for ${{ matrix.buildplat[0] }}-${{ matrix.python }}_${{ matrix.buildplat[1] }}_${{ matrix.buildplat[2] }}
-    runs-on: ${{ matrix.buildplat[0] }}
+    name: Wheel for ${{ matrix.os }}-cp${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
 
     strategy:
       # Build the other wheels even if one fails
       fail-fast: false
       matrix:
-        buildplat:
-        - [ubuntu-latest, manylinux, x86_64]
-        # - [ubuntu-latest, musllinux, x86_64]
-        - [macos-latest, macosx, x86_64]
-        - [windows-latest, win, AMD64]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         python: ['cp310']
         # python: ['cp310', 'pp39']
-        # python: ['cp38', 'cp39', 'cp310', 'cp311', 'cp312', 'pp39']
-        # python: ['cp38', 'cp39', 'cp310', 'cp311', 'cp312']
-        # python: [38, 39, 310, 311, 312]
-        # boost_version: ['1.80.0']
         include:
-          - buildplat: [ubuntu-latest, manylinux, x86_64]
-            boost_version: 1.80.0
-            version: 22.04
+          - os: ubuntu-latest
+            platform_version: 22.04
             link: static+shared
             toolset: gcc
-          - buildplat: [macos-latest, macosx, x86_64]
-            boost_version: 1.80.0
-            version: 11
+          - os: macos-latest
+            platform_version: 11
             link: static+shared
             toolset: clang
-          - buildplat: [windows-latest, win, AMD64]
-            boost_version: 1.80.0
-            version: 2022
+          - os: windows-latest
+            platform_version: 2022
             link: static
             toolset: msvc
 
@@ -59,33 +43,35 @@ jobs:
         with:
           submodules: true
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-
-      - name: Install boost
+      - name: Install boost for Windows and macOS
         uses: MarkusJx/install-boost@v2.4.4
         id: install-boost
         with:
-          boost_version: ${{ matrix.boost_version }}
-          platform_version: ${{ matrix.version }}
+          boost_version: 1.80.0
+          platform_version: ${{ matrix.platform_version }}
           link: ${{ matrix.link }}
           toolset: ${{ matrix.toolset }}
           arch: x86
+        if: runner.os != 'Linux'
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.11.4
         env:
-          CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}*
-          CIBW_ARCHS: ${{ matrix.buildplat[2] }}
+          CIBW_BUILD: ${{ matrix.python }}-*
+          # CIBW_ARCHS: all
+          CIBW_ARCHS_LINUX: auto
+          # CIBW_ARCHS_LINUX: x86_64 i686 aarch64
+          CIBW_ARCHS_MACOS: x86_64 arm64
+          CIBW_ARCHS_WINDOWS: AMD64
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
-          Boost_INCLUDE_DIR: ${{ steps.install-boost.outputs.BOOST_ROOT }}/include
-          Boost_LIBRARY_DIRS: ${{ steps.install-boost.outputs.BOOST_ROOT }}/lib
-          CIBW_BEFORE_BUILD_LINUX: echo $BOOST_ROOT
+          # Boost_INCLUDE_DIR: ${{ steps.install-boost.outputs.BOOST_ROOT }}/include
+          # Boost_LIBRARY_DIRS: ${{ steps.install-boost.outputs.BOOST_ROOT }}/lib
+          # CIBW_BEFORE_BUILD_LINUX: echo $BOOST_ROOT
           CIBW_ENVIRONMENT: BOOST_ROOT='${{ steps.install-boost.outputs.BOOST_ROOT }}'
           CIBW_ENVIRONMENT_WINDOWS: BOOST_ROOT='${{ steps.install-boost.outputs.BOOST_ROOT }}'
           CIBW_ENVIRONMENT_MACOS: BOOST_ROOT='${{ steps.install-boost.outputs.BOOST_ROOT }}'
-          CIBW_ENVIRONMENT_LINUX: BOOST_ROOT=/boost
-          CIBW_ENVIRONMENT_PASS_LINUX: BOOST_ROOT
+          # CIBW_ENVIRONMENT_LINUX: BOOST_ROOT=/boost
+          # CIBW_ENVIRONMENT_PASS_LINUX: BOOST_ROOT
 
       - name: Show files
         run: ls -lh wheelhouse
