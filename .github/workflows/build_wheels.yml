@@ -13,7 +13,7 @@ env:
 jobs:
   # Build wheels for Linux, macOS, and Windows
   build_wheels:
-    name: Wheel for ${{ matrix.os }}-cp${{ matrix.python }}
+    name: Wheel for ${{ matrix.os }}-${{ matrix.python }}
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -75,7 +75,7 @@ jobs:
           CIBW_ENVIRONMENT_MACOS: BOOST_ROOT='${{ steps.install-boost.outputs.BOOST_ROOT }}'
           # CIBW_ENVIRONMENT_LINUX: BOOST_ROOT=/boost
           # CIBW_ENVIRONMENT_PASS_LINUX: BOOST_ROOT
-          CIBW_BEFORE_ALL_LINUX: yum install boost-devel
+          CIBW_BEFORE_ALL_LINUX: yum install -y boost-devel
           # CIBW_BEFORE_ALL_LINUX: >
           #   yum install boost-devel
           # CIBW_BEFORE_BUILD_LINUX: echo $BOOST_ROOT
