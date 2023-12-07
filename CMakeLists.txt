@@ -13,6 +13,10 @@ add_subdirectory(pybind11)
 
 # set(Boost_USE_STATIC_LIBS OFF)
 
+message("PACKAGE_ROOTS are:")
+message("BOOST_ROOT is ${BOOST_ROOT}")
+
+
 set(BOOST_INCLUDE_DIRS "${BOOST_ROOT}/include")
 set(BOOST_LIBRARY_DIRS "${BOOST_ROOT}/lib")
 
@@ -30,15 +34,12 @@ find_package(Boost COMPONENTS chrono thread serialization REQUIRED)
 
 include_directories (
   /usr/local/include
-  ${Boost_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
-  ${CMAKE_SOURCE_DIR}/include
   ${USER_INCLUDE_PATH}/database
   ${USER_INCLUDE_PATH} )
 
 link_directories (
   /usr/local/lib
-  ${Boost_LIBRARY_DIR}
   ${Boost_LIBRARY_DIRS}
   ${USER_LIBRARY_PATH} )
 
