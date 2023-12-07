@@ -26,6 +26,10 @@ set(BOOST_LIBRARY_DIRS "${BOOST_ROOT}/lib")
 # set(BOOST_INCLUDE_DIR "/usr/local/include")
 # set(BOOST_LIBRARY_DIR "/usr/local/lib")
 
+
+find_package(Boost2 REQUIRED regex date_time system filesystem thread graph program_options)
+
+
 find_package(Boost REQUIRED regex date_time system filesystem thread graph program_options)
 
 # include_directories(${BOOST_INCLUDE_DIRS})
