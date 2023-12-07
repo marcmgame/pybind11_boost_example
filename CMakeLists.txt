@@ -15,6 +15,7 @@ add_subdirectory(pybind11)
 
 message("PACKAGE_ROOTS are:")
 message("BOOST_ROOT is ${BOOST_ROOT}")
+message("Boost_ROOT is ${Boost_ROOT}")
 
 
 set(BOOST_INCLUDE_DIRS "${BOOST_ROOT}/include")
