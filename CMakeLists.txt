@@ -13,11 +13,6 @@ add_subdirectory(pybind11)
 
 # set(Boost_USE_STATIC_LIBS OFF)
 
-message("PACKAGE_ROOTS are:")
-message("BOOST_ROOT is ${BOOST_ROOT}")
-message("Boost_ROOT is ${Boost_ROOT}")
-
-
 set(BOOST_INCLUDE_DIRS "${BOOST_ROOT}/include")
 set(BOOST_LIBRARY_DIRS "${BOOST_ROOT}/lib")
 
@@ -26,10 +21,6 @@ set(BOOST_LIBRARY_DIRS "${BOOST_ROOT}/lib")
 
 # set(BOOST_INCLUDE_DIR "/usr/local/include")
 # set(BOOST_LIBRARY_DIR "/usr/local/lib")
-
-
-find_package(Boost2 REQUIRED regex date_time system filesystem thread graph program_options)
-
 
 find_package(Boost REQUIRED regex date_time system filesystem thread graph program_options)
 
